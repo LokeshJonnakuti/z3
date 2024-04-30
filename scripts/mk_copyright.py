@@ -17,7 +17,7 @@ Copyright (c) 2015 Microsoft Corporation
 def has_cr(file):
     ins = open(file)
     lines = 0
-    line = ins.readline()
+    line = ins.readline(5_000_000)
     while line and lines < 20:
         m = cr.search(line)
         if m:
@@ -27,7 +27,7 @@ def has_cr(file):
         if m:
             ins.close()
             return True
-        line = ins.readline()
+        line = ins.readline(5_000_000)
     ins.close()
     return False
 
@@ -36,10 +36,10 @@ def add_cr(file):
     ins = open(file)
     ous = open(tmp,'w')
     ous.write(cr_notice)
-    line = ins.readline()
+    line = ins.readline(5_000_000)
     while line:
         ous.write(line)
-        line = ins.readline()
+        line = ins.readline(5_000_000)
     ins.close()
     ous.close()
     os.system("move %s %s" % (tmp, file))

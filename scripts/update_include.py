@@ -11,7 +11,7 @@ def fix_include(file, paths):
     tmp = "%s.tmp" % file
     ins = open(file)
     ous = open(tmp,'w')
-    line = ins.readline()
+    line = ins.readline(5_000_000)
     found = False
     while line:
         m = is_include.search(line)
@@ -20,7 +20,7 @@ def fix_include(file, paths):
             ous.write(paths[m.group(1)])
             ous.write("\"\n")
             found = True
-            line = ins.readline()
+            line = ins.readline(5_000_000)
             continue
         m = is_include2.search(line)
         if m and m.group(1) in paths:
@@ -28,10 +28,10 @@ def fix_include(file, paths):
             ous.write(paths[m.group(1)])
             ous.write("\"\n")
             found = True
-            line = ins.readline()
+            line = ins.readline(5_000_000)
             continue
         ous.write(line)            
-        line = ins.readline()
+        line = ins.readline(5_000_000)
     ins.close()
     ous.close()
     if found:
