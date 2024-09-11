@@ -14,7 +14,7 @@ def fix_hdr(file):
     tmp = "%s.tmp" % file
     ins = open(file)
     ous = open(tmp,'w')
-    line = ins.readline()
+    line = ins.readline(5_000_000)
     found = False
     while line:
         m = doubleu.search(line)
@@ -24,7 +24,7 @@ def fix_hdr(file):
             ous.write(" ")
             ous.write(m.group(2))
             ous.write("_H_\n")
-            line = ins.readline()
+            line = ins.readline(5_000_000)
             found = True
             continue
         m = ifndef.search(line)
@@ -33,7 +33,7 @@ def fix_hdr(file):
             ous.write("#ifndef ")
             ous.write(m.group(1))
             ous.write("_H_\n")
-            line = ins.readline()
+            line = ins.readline(5_000_000)
             found = True
             continue
         m = defn.search(line)
@@ -41,7 +41,7 @@ def fix_hdr(file):
             ous.write("#define ")
             ous.write(m.group(1))
             ous.write("_H_\n")
-            line = ins.readline()
+            line = ins.readline(5_000_000)
             found = True
             continue
         m = endif.search(line)
@@ -49,11 +49,11 @@ def fix_hdr(file):
             ous.write("#endif /* ")
             ous.write(m.group(1))
             ous.write("_H_ */\n")
-            line = ins.readline()
+            line = ins.readline(5_000_000)
             found = True
             continue
         ous.write(line)
-        line = ins.readline()
+        line = ins.readline(5_000_000)
     ins.close()
     ous.close()
     if found:

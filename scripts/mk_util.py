@@ -605,7 +605,7 @@ def build_static_bin():
 def is_cr_lf(fname):
     # Check whether text files use cr/lf
     f = open(fname, 'r')
-    line = f.readline()
+    line = f.readline(5_000_000)
     f.close()
     sz = len(line)
     return sz >= 2 and line[sz-2] == '\r' and line[sz-1] == '\n'
