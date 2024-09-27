@@ -18,6 +18,7 @@ from fnmatch import fnmatch
 import sysconfig
 import compileall
 import subprocess
+from security import safe_command
 
 def getenv(name, default):
     try:
@@ -120,7 +121,7 @@ FPMATH_ENABLED=getenv("FPMATH_ENABLED", "True")
 
 
 def check_output(cmd):
-    out = subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[0]
+    out = safe_command.run(subprocess.Popen, cmd, stdout=subprocess.PIPE).communicate()[0]
     if out != None:
         enc = sys.getdefaultencoding()
         if enc != None: return out.decode(enc).rstrip('\r\n')
@@ -233,7 +234,7 @@ def exec_cmd(cmd):
     cmd = new_cmd
     null = open(os.devnull, 'wb')
     try:
-        return subprocess.call(cmd, stdout=null, stderr=null)
+        return safe_command.run(subprocess.call, cmd, stdout=null, stderr=null)
     except:
         # Failed to create process
         return 1
@@ -398,7 +399,7 @@ def check_java():
     oo = TempFile('output')
     eo = TempFile('errout')
     try:
-        subprocess.call([JAVAC, 'Hello.java', '-verbose', '-source', '1.8', '-target', '1.8' ], stdout=oo.fname, stderr=eo.fname)
+        safe_command.run(subprocess.call, [JAVAC, 'Hello.java', '-verbose', '-source', '1.8', '-target', '1.8' ], stdout=oo.fname, stderr=eo.fname)
         oo.commit()
         eo.commit()
     except:
@@ -509,7 +510,7 @@ def find_ml_lib():
     t = TempFile('output')
     null = open(os.devnull, 'wb')
     try:
-        subprocess.call([OCAMLC, '-where'], stdout=t.fname, stderr=null)
+        safe_command.run(subprocess.call, [OCAMLC, '-where'], stdout=t.fname, stderr=null)
         t.commit()
     except:
         raise MKException('Failed to find Ocaml library; please set OCAML_LIB')

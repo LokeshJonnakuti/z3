@@ -16,6 +16,7 @@ import sys
 import shutil
 from mk_exception import *
 from fnmatch import fnmatch
+from security import safe_command
 
 def getenv(name, default):
     try:
@@ -175,7 +176,7 @@ def check_build_dir(path):
     return os.path.exists(path) and os.path.exists(os.path.join(path, 'Makefile'))
 
 def check_output(cmd):
-    out = subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[0]
+    out = safe_command.run(subprocess.Popen, cmd, stdout=subprocess.PIPE).communicate()[0]
     if out != None:
         enc = sys.getdefaultencoding()
         if enc != None: return out.decode(enc).rstrip('\r\n')
@@ -257,7 +258,7 @@ def exec_cmds(cmds):
     f.close()
     res = 0
     try:
-        res = subprocess.call(cmd_file, shell=True)
+        res = safe_command.run(subprocess.call, cmd_file, shell=True)
     except:
         res = 1
     try:

@@ -17,6 +17,7 @@ import zipfile
 from mk_exception import *
 from mk_project import *
 import mk_util
+from security import safe_command
 
 BUILD_DIR='build-dist'
 BUILD_X64_DIR=os.path.join('build-dist', 'x64')
@@ -150,7 +151,7 @@ def mk_build_dir(path, x64):
         if PYTHON_ENABLED:
             opts.append('--python')
         opts.append('--guardcf')
-        if subprocess.call(opts) != 0:
+        if safe_command.run(subprocess.call, opts) != 0:
             raise MKException("Failed to generate build directory at '%s'" % path)
 
 # Create build directories
@@ -175,7 +176,7 @@ def exec_cmds(cmds):
     f.close()
     res = 0
     try:
-        res = subprocess.call(cmd_file, shell=True)
+        res = safe_command.run(subprocess.call, cmd_file, shell=True)
     except:
         res = 1
     try:
