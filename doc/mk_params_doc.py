@@ -8,6 +8,7 @@ import subprocess
 import sys
 import re
 import os
+from security import safe_command
 
 BUILD_DIR='../build'
 OUTPUT_DIRECTORY=os.path.join(os.getcwd(), 'api')
@@ -34,7 +35,7 @@ def help(ous):
     global BUILD_DIR
     ous.write("Z3 Options\n")
     z3_exe = BUILD_DIR + "/z3"
-    out = subprocess.Popen([z3_exe, "-pm"],stdout=subprocess.PIPE).communicate()[0]
+    out = safe_command.run(subprocess.Popen, [z3_exe, "-pm"],stdout=subprocess.PIPE).communicate()[0]
     modules = ["global"]
     if out != None:
         out = out.decode(sys.getdefaultencoding())
@@ -45,7 +46,7 @@ def help(ous):
             if m:
                 modules += [m.group(1)]
         for module in modules:
-            out = subprocess.Popen([z3_exe, "-pmmd:%s" % module],stdout=subprocess.PIPE).communicate()[0]
+            out = safe_command.run(subprocess.Popen, [z3_exe, "-pmmd:%s" % module],stdout=subprocess.PIPE).communicate()[0]
             if out == None:
                 continue
             out = out.decode(sys.getdefaultencoding())

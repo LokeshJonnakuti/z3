@@ -16,6 +16,7 @@ import sys
 import shutil
 from mk_exception import *
 from fnmatch import fnmatch
+from security import safe_command
 
 def getenv(name, default):
     try:
@@ -143,7 +144,7 @@ def parse_options():
     set_build_dir(path)
 
 def check_output(cmd):
-    out = subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[0]
+    out = safe_command.run(subprocess.Popen, cmd, stdout=subprocess.PIPE).communicate()[0]
     if out != None:
         enc = sys.getdefaultencoding()
         if enc != None: return out.decode(enc).rstrip('\r\n')

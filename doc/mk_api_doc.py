@@ -11,6 +11,7 @@ import getopt
 import pydoc
 import sys
 import subprocess
+from security import safe_command
 
 ML_ENABLED=False
 MLD_ENABLED=False
@@ -314,7 +315,7 @@ try:
 
     print("Removed annotations from z3_api.h.")
     try:
-        if subprocess.call([DOXYGEN_EXE, doxygen_config_file]) != 0:
+        if safe_command.run(subprocess.call, [DOXYGEN_EXE, doxygen_config_file]) != 0:
             print("ERROR: doxygen returned nonzero return code")
             exit(1)
     except:

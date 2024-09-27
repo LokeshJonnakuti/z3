@@ -17,6 +17,7 @@ import zipfile
 from mk_exception import *
 from mk_project import *
 import mk_util
+from security import safe_command
 
 BUILD_DIR='build-dist'
 VERBOSE=True
@@ -145,7 +146,7 @@ def mk_build_dir(path):
                 "CXX": "aarch64-none-linux-gnu-g++"
             }
             env.update(myvar)
-        if subprocess.call(opts, env=env) != 0:
+        if safe_command.run(subprocess.call, opts, env=env) != 0:
             raise MKException("Failed to generate build directory at '%s'" % path)
 
 # Create build directories

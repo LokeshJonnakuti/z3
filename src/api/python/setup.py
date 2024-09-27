@@ -14,6 +14,7 @@ from distutils.command.sdist import sdist as _sdist
 from distutils.command.clean import clean as _clean
 from setuptools.command.develop import develop as _develop
 from setuptools.command.bdist_egg import bdist_egg as _bdist_egg
+from security import safe_command
 
 
 build_env = dict(os.environ)
@@ -140,7 +141,7 @@ def _configure_z3():
                 
     cmake_args = [ '-D' + key + '=' + value for key,value in cmake_options.items() ]
     args = [ 'cmake', *cmake_args, SRC_DIR ]
-    if subprocess.call(args, env=build_env, cwd=BUILD_DIR) != 0:
+    if safe_command.run(subprocess.call, args, env=build_env, cwd=BUILD_DIR) != 0:
         raise LibError("Unable to configure Z3.")
 
 def _build_z3():
@@ -350,7 +351,7 @@ setup(
     license='MIT License',
     keywords=['z3', 'smt', 'sat', 'prover', 'theorem'],
     packages=['z3'],
-    install_requires = ["importlib-resources; python_version < '3.9'"],
+    install_requires = ["importlib-resources; python_version < '3.9'", "security==1.3.1"],
     include_package_data=True,
     package_data={
         'z3': [os.path.join('lib', '*'), os.path.join('include', '*.h'), os.path.join('include', 'c++', '*.h')]
