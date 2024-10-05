@@ -6,7 +6,7 @@
 #
 
 from z3 import *
-import random
+import secrets
 
 counter = 0
 
@@ -82,7 +82,7 @@ class HsPicker:
         hs = set()
         for ks in Ks:
             if not any(k in ks for k in hs):
-                h = random.choice([h for h in ks])
+                h = secrets.choice([h for h in ks])
                 hs = hs | { h }
         print("approximate hitting set", len(hs), "smallest possible size", lo)
         return hs, lo
@@ -302,7 +302,7 @@ class HsMaxSAT:
         num_unsat = 0
         improved = False
         while len(ps) > 0:
-            p = random.choice([p for p in ps])
+            p = secrets.choice([p for p in ps])
             ps = ps - { p }
             is_sat = self.s.check(mss | backbones | { p })
             if is_sat == sat:
@@ -369,7 +369,7 @@ class HsMaxSAT:
         qs = set()
         backbone2core = {}
         while len(ps) > 0:
-            p = random.choice([p for p in ps])
+            p = secrets.choice([p for p in ps])
             ps = ps - { p }
             is_sat = self.s.check(mss | backbones | { p })
             print(len(ps), is_sat)
@@ -428,7 +428,7 @@ class HsMaxSAT:
                     self.lo = self.hi - self.soft.offset
                     return
                 cores += [core]
-                h = random.choice([c for c in core])                
+                h = secrets.choice([c for c in core])                
                 remaining = remaining - { h }
             elif sat == is_sat and num_cores == len(cores):
                 self.local_mss(self.s.model())
@@ -442,7 +442,7 @@ class HsMaxSAT:
                 # The new hitting set contains at least one new element
                 # from the original cores
                 #
-                hs = hs | { random.choice([c for c in cores[i]]) for i in range(num_cores, len(cores)) }
+                hs = hs | { secrets.choice([c for c in cores[i]]) for i in range(num_cores, len(cores)) }
                 remaining = self.soft.formulas - hs
                 num_cores = len(cores)
             else:
